@@ -1,0 +1,100 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum ColumnName {
+  BACKLOG
+  TODO
+  IN_PROGRESS
+  REVIEW
+  DONE
+}
+
+enum Prioriy {
+  LOW
+  MEDIUM
+  HIGH
+  EMERGENCY
+}
+
+model User {
+  id           String    @id @default(uuid())
+  username     String
+  fullName     String
+  email        String    @unique()
+  phoneNo      String    @unique()
+  password     String
+  profilePhoto String?
+  isDeleted    Boolean   @default(false)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt()
+  deletedAt    DateTime?
+  boards       Boards[]
+  tasks        Tasks[]
+}
+
+model Boards {
+  id        String @id @default(uuid())
+  boardName String
+
+  userId String
+
+  isDeleted Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt()
+  deletedAt DateTime?
+
+  createdBy User      @relation(fields: [userId], references: [id])
+  columns   Columns[]
+
+  @@index([userId])
+}
+
+model Columns {
+  id         String     @id @default(uuid())
+  columnName ColumnName
+  boardId    String
+  order      Int
+
+  isDeleted Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt()
+  deletedAt DateTime?
+
+  board Boards  @relation(fields: [boardId], references: [id])
+  tasks Tasks[]
+
+  @@unique([columnName, boardId])
+  @@index([boardId])
+}
+
+model Tasks {
+  id String @id @default(uuid())
+
+  title       String
+  description String
+  assignee    String
+  labels      String
+  dueDate     DateTime
+  priority    Prioriy
+
+  columnId String
+
+  isDeleted Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt()
+  deletedAt DateTime?
+
+  column Columns @relation(fields: [columnId], references: [id])
+  user   User    @relation(fields: [assignee], references: [id])
+}
