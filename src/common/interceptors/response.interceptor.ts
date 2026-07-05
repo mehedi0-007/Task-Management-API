@@ -4,7 +4,6 @@ import {
   ExecutionContext,
   CallHandler,
 } from '@nestjs/common';
-import { Interface } from 'readline';
 import { map } from 'rxjs/operators';
 
 interface Response {

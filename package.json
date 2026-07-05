@@ -3,8 +3,8 @@
   "version": "0.0.1",
   "description": "",
   "author": "",
-  "type": "module",
   "private": true,
+  "type": "commonjs",
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build",

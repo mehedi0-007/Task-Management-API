@@ -3,8 +3,8 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { PrismaService } from '../../../prisma/prisma.service.js';
 import * as bcrypt from 'bcrypt';
+import { PrismaService } from 'src/prisma/prisma.service.js';
 
 type createUserInput = {
   fullName: string;

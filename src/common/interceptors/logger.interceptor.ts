@@ -20,13 +20,11 @@ export class LoggerInterceptor implements NestInterceptor {
 
     const start = Date.now();
 
-    this.logger.log(`--->${method} ${url}`);
-
     return next.handle().pipe(
       tap(() => {
         const duration = Date.now() - start;
 
-        this.logger.log(`<---${method} ${url} (${duration}ms)`);
+        this.logger.log(`${method} ${url} ${duration}ms`);
       }),
     );
   }
