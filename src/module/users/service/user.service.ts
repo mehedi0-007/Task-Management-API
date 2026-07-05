@@ -1,11 +1,10 @@
 import {
-  ConflictException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service.js';
+import { PrismaService } from '../../../prisma/prisma.service.js';
 import * as bcrypt from 'bcrypt';
-import { User } from 'src/generated/prisma/client.js';
 
 type createUserInput = {
   fullName: string;
@@ -18,44 +17,10 @@ type createUserInput = {
 export class UserService {
   constructor(private readonly Prisma: PrismaService) {}
 
-  async createUser(value: createUserInput): Promise<any> {
-    const existingUser = await this.Prisma.user.findUnique({
-      where: { email: value.email },
-    });
-
-    if (!existingUser)
-      throw new ConflictException('Provided Email already exists');
-
-    const hashedPassword = await bcrypt.hash(value.password, 10);
-
-    await this.Prisma.user.create({
-      data: {
-        fullName: value.fullName,
-        email: value.email,
-        password: hashedPassword,
-        phoneNo: value.phoneNo,
-      },
-    });
-  }
-
-  async updateRefresh(userId: string, token: string): Promise<any> {
-    const user = await this.Prisma.user.findUnique({ where: { id: userId } });
-    if (!user) throw new NotFoundException('User not found');
-
-    const hashToken = await bcrypt.hash(token, 10);
-
-    await this.Prisma.user.update({
-      where: { id: userId },
-      data: { refreshToken: hashToken },
-    });
-  }
-
-  async findUserbyEmail(email: string): Promise<User> {
+  async authfindUserbyEmail(email: string): Promise<boolean> {
     const user = await this.Prisma.user.findUnique({ where: { email } });
-
-    if (!user) throw new NotFoundException('User not found');
-
-    return user;
+    if (!user) return true;
+    return false;
   }
 
   async findUserbyId(userId: string): Promise<any> {
@@ -66,5 +31,28 @@ export class UserService {
     const { password, ...result } = user;
 
     return result;
+  }
+
+  async updatePassword(
+    userId: string,
+    oldPass: string,
+    newPass: string,
+  ): Promise<boolean> {
+    const user = await this.Prisma.user.findUnique({ where: { id: userId } });
+
+    if (!user) throw new NotFoundException('User not found');
+
+    const isValid = await bcrypt.compare(oldPass, user.password);
+
+    if (!isValid) throw new UnauthorizedException('Invalid Password provided');
+
+    const hashPass = await bcrypt.hash(newPass, 10);
+
+    await this.Prisma.user.update({
+      where: { id: userId },
+      data: { password: hashPass },
+    });
+
+    return true;
   }
 }
