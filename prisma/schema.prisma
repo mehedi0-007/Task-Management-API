@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client"
   output   = "../src/generated/prisma"
@@ -25,12 +24,12 @@ enum Prioriy {
 
 model User {
   id           String    @id @default(uuid())
-  username     String
   fullName     String
   email        String    @unique()
-  phoneNo      String    @unique()
+  phoneNo      String
   password     String
   profilePhoto String?
+  refreshToken String?
   isDeleted    Boolean   @default(false)
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt()
@@ -96,7 +95,6 @@ model Tasks {
 }
 
 model Task_Act {
-  id String @id @default(uuid())
+  id    String @id @default(uuid())
   title String
-  
 }
