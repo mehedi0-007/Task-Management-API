@@ -7,9 +7,10 @@ import { ResponseInterceptor } from '../../common/interceptors/response.intercep
 import { AppJwtModule } from '../../common/jwt/jwt.module.js';
 import { LoggerInterceptor } from '../../common/interceptors/logger.interceptor.js';
 import { AuthGuard } from '../../common/guards/auth.guard.js';
+import { AuthModule } from '../auth/auth.module.js';
 
 @Module({
-  imports: [PrismaModule, AppJwtModule],
+  imports: [PrismaModule, AppJwtModule, AuthModule],
   controllers: [AppController],
   providers: [
     AppService,

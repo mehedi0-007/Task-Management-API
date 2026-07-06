@@ -6,13 +6,6 @@ import {
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from 'src/prisma/prisma.service.js';
 
-type createUserInput = {
-  fullName: string;
-  phoneNo: string;
-  email: string;
-  password: string;
-};
-
 @Injectable()
 export class UserService {
   constructor(private readonly Prisma: PrismaService) {}

@@ -34,10 +34,7 @@ export class AuthService {
       },
     });
 
-    return {
-      message: 'User Created Sucesfully',
-      data: null,
-    };
+    return null;
   }
 
   async loginUser(value: LoginUserDTO): Promise<any> {
@@ -61,31 +58,30 @@ export class AuthService {
     const { password, ...userData } = user;
 
     return {
-      user: userData,
+      ...userData,
       ...tokens,
     };
   }
 
   async refreshAccessToken(userId: string, token: string): Promise<any> {
-    const payload = (await this.jwt.verifyRefreshToken(
-      token,
-    )) as RefreshTokenPayload;
+    await this.jwt.verifyRefreshToken(token);
 
     const user = await this.prisma.user.findUnique({
-      where: { id: payload.sub },
+      where: { id: userId },
     });
 
     if (!user) throw new NotFoundException('User not found');
 
+    const isValid = await bcrypt.compare(token, user.refreshToken ?? '');
+
+    if (!isValid) throw new UnauthorizedException('Authentication failed');
+
     const tokens = await this.generateToken({
-      sub: payload.sub,
-      name: payload.name,
+      sub: user.id,
+      name: user.fullName,
     });
 
-    const { password, ...userData } = user;
-
     return {
-      user: userData,
       ...tokens,
     };
   }

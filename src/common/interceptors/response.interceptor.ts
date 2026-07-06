@@ -8,7 +8,7 @@ import { map } from 'rxjs/operators';
 
 interface Response {
   message: string;
-  value: unknown;
+  data: object;
 }
 
 @Injectable()
@@ -18,7 +18,7 @@ export class ResponseInterceptor implements NestInterceptor {
       map((value: Response) => ({
         success: true,
         message: value.message ?? '',
-        value: value.data ?? value,
+        data: value.data ?? value,
       })),
     );
   }
