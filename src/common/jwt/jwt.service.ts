@@ -59,7 +59,7 @@ export class AppJwtService {
     const refreshSecret = process.env.JWT_REFRESH_SECRET;
 
     try {
-      return await this.jwt.verify(token, { secret: refreshSecret });
+      return await this.jwt.verifyAsync(token, { secret: refreshSecret });
     } catch {
       throw new UnauthorizedException('Authentication failed');
     }

@@ -8,6 +8,12 @@ import { LoginUserDTO } from '../dto/login.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AppJwtService } from 'src/common/jwt/jwt.service';
 import * as bcrypt from 'bcrypt';
+import { JwtPayload } from 'jsonwebtoken';
+
+type RefreshTokenPayload = JwtPayload & {
+  sub: string;
+  name: string;
+};
 
 @Injectable()
 export class AuthService {
@@ -61,11 +67,27 @@ export class AuthService {
   }
 
   async refreshAccessToken(userId: string, token: string): Promise<any> {
-    const payload = await this.jwt.verifyRefreshToken(token);
+    const payload = (await this.jwt.verifyRefreshToken(
+      token,
+    )) as RefreshTokenPayload;
 
     const user = await this.prisma.user.findUnique({
-      where: { id: payload.sub? },
+      where: { id: payload.sub },
     });
+
+    if (!user) throw new NotFoundException('User not found');
+
+    const tokens = await this.generateToken({
+      sub: payload.sub,
+      name: payload.name,
+    });
+
+    const { password, ...userData } = user;
+
+    return {
+      user: userData,
+      ...tokens,
+    };
   }
 
   private async generateToken(payload: {

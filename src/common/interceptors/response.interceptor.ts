@@ -8,17 +8,17 @@ import { map } from 'rxjs/operators';
 
 interface Response {
   message: string;
-  data: any;
+  value: unknown;
 }
 
 @Injectable()
 export class ResponseInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler) {
     return next.handle().pipe(
-      map((data: Response) => ({
+      map((value: Response) => ({
         success: true,
-        message: data.message ?? '',
-        data: data.data ?? data,
+        message: value.message ?? '',
+        value: value.data ?? value,
       })),
     );
   }
