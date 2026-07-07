@@ -8,12 +8,6 @@ import { LoginUserDTO } from '../dto/login.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AppJwtService } from 'src/common/jwt/jwt.service';
 import * as bcrypt from 'bcrypt';
-import { JwtPayload } from 'jsonwebtoken';
-
-type RefreshTokenPayload = JwtPayload & {
-  sub: string;
-  name: string;
-};
 
 @Injectable()
 export class AuthService {
@@ -22,7 +16,7 @@ export class AuthService {
     private readonly jwt: AppJwtService,
   ) {}
 
-  async registerUser(value: RegisterUserDTO): Promise<any> {
+  async registerUser(value: RegisterUserDTO) {
     const hashedPassword = await bcrypt.hash(value.password, 10);
 
     await this.prisma.user.create({
@@ -34,10 +28,13 @@ export class AuthService {
       },
     });
 
-    return null;
+    return {
+      message: 'User created successfully',
+      data: ' ',
+    };
   }
 
-  async loginUser(value: LoginUserDTO): Promise<any> {
+  async loginUser(value: LoginUserDTO) {
     const user = await this.prisma.user.findUnique({
       where: { email: value.email },
     });
@@ -58,12 +55,15 @@ export class AuthService {
     const { password, ...userData } = user;
 
     return {
-      ...userData,
-      ...tokens,
+      message: 'Logged in successfully',
+      data: {
+        ...userData,
+        ...tokens,
+      },
     };
   }
 
-  async refreshAccessToken(userId: string, token: string): Promise<any> {
+  async refreshAccessToken(userId: string, token: string) {
     await this.jwt.verifyRefreshToken(token);
 
     const user = await this.prisma.user.findUnique({
@@ -82,7 +82,10 @@ export class AuthService {
     });
 
     return {
-      ...tokens,
+      message: 'Authentication Successful',
+      data: {
+        ...tokens,
+      },
     };
   }
 

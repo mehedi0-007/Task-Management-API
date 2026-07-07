@@ -10,27 +10,20 @@ import { PrismaService } from 'src/prisma/prisma.service.js';
 export class UserService {
   constructor(private readonly Prisma: PrismaService) {}
 
-  async authfindUserbyEmail(email: string): Promise<boolean> {
-    const user = await this.Prisma.user.findUnique({ where: { email } });
-    if (!user) return true;
-    return false;
-  }
-
-  async findUserbyId(userId: string): Promise<any> {
+  async getUserInfo(userId: string) {
     const user = await this.Prisma.user.findUnique({ where: { id: userId } });
 
     if (!user) throw new NotFoundException('User not found');
 
     const { password, ...result } = user;
 
-    return result;
+    return {
+      message: 'User found',
+      data: result,
+    };
   }
 
-  async updatePassword(
-    userId: string,
-    oldPass: string,
-    newPass: string,
-  ): Promise<boolean> {
+  async updatePassword(userId: string, oldPass: string, newPass: string) {
     const user = await this.Prisma.user.findUnique({ where: { id: userId } });
 
     if (!user) throw new NotFoundException('User not found');
@@ -46,6 +39,9 @@ export class UserService {
       data: { password: hashPass },
     });
 
-    return true;
+    return {
+      message: 'Password Updated Successfully',
+      data: ' ',
+    };
   }
 }

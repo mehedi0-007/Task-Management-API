@@ -8,15 +8,27 @@ import { AppJwtModule } from '../../common/jwt/jwt.module.js';
 import { LoggerInterceptor } from '../../common/interceptors/logger.interceptor.js';
 import { AuthGuard } from '../../common/guards/auth.guard.js';
 import { AuthModule } from '../auth/auth.module.js';
+import { BoardModule } from '../boards/boards.module.js';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
-  imports: [PrismaModule, AppJwtModule, AuthModule],
+  imports: [
+    ThrottlerModule.forRoot([{ ttl: 60_000, limit: 50 }]),
+    PrismaModule,
+    AppJwtModule,
+    AuthModule,
+    BoardModule,
+  ],
   controllers: [AppController],
   providers: [
     AppService,
     {
       provide: APP_GUARD,
       useClass: AuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
     },
     {
       provide: APP_INTERCEPTOR,

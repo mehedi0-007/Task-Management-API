@@ -69,7 +69,7 @@ model Columns {
   board Boards  @relation(fields: [boardId], references: [id])
   tasks Tasks[]
 
-  @@unique([columnName, boardId])
+  @@unique([columnName, boardId, order])
   @@index([boardId])
 }
 
