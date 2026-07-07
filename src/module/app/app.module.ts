@@ -10,6 +10,9 @@ import { AuthGuard } from '../../common/guards/auth.guard.js';
 import { AuthModule } from '../auth/auth.module.js';
 import { BoardModule } from '../boards/boards.module.js';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { ColumnModule } from '../columns/column.module.js';
+import { TaskModule } from '../tasks/tasks.module.js';
+import { UserModule } from '../users/user.module.js';
 
 @Module({
   imports: [
@@ -18,6 +21,9 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
     AppJwtModule,
     AuthModule,
     BoardModule,
+    ColumnModule,
+    TaskModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [

@@ -82,6 +82,7 @@ model Tasks {
   labels      String
   dueDate     DateTime
   priority    Prioriy
+  position    Int
 
   columnId String
 

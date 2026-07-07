@@ -24,6 +24,7 @@ export class ColumnService {
         description: value.description,
         assignee: value.assignee,
         labels: value.labels,
+        position: value.position,
         priority: value.priority,
         dueDate: value.duedate,
       },

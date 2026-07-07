@@ -1,5 +1,5 @@
 import { Prioriy } from '@prisma/client';
-import { IsDate, IsEnum, IsString } from 'class-validator';
+import { IsDate, IsEnum, IsNumber, IsString } from 'class-validator';
 
 export class CreateTaskDTO {
   @IsString()
@@ -16,6 +16,9 @@ export class CreateTaskDTO {
 
   @IsDate()
   duedate!: Date;
+
+  @IsNumber()
+  position!: number;
 
   @IsEnum(Prioriy)
   priority!: Prioriy;
