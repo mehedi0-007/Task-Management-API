@@ -1,6 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { BoardService } from '../service/boards.service';
 import { CurrentUser } from 'src/common/decorators/currentUser.decorator';
+import { CreateColumnDTO } from '../dto/column.dto';
 
 interface jwtPayload {
   sub: string;
@@ -32,5 +33,10 @@ export class BoardController {
   @Delete('/:id')
   async deleteBoard(@Param('id') id: string) {
     return await this.boardService.deleteBoard(id);
+  }
+
+  @Post('/:id/columns')
+  async createColumns(@Param('id') id: string, @Body() dto: CreateColumnDTO) {
+    return this.boardService.createColumn(id, dto);
   }
 }

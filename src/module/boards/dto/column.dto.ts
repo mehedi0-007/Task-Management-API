@@ -1,10 +1,7 @@
 import { ColumnName } from '@prisma/client';
-import { IsEnum, IsNumber, IsString } from 'class-validator';
+import { IsEnum, IsNumber } from 'class-validator';
 
-export class ColumnCreateDTO {
-  @IsString()
-  boardId!: string;
-
+export class CreateColumnDTO {
   @IsEnum(ColumnName)
   columnName!: ColumnName;
 

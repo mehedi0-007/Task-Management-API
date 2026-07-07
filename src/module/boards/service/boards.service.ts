@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { ColumnCreateDTO } from '../dto/column.dto';
+import { CreateColumnDTO } from '../dto/column.dto';
 
 @Injectable()
 export class BoardService {
@@ -89,16 +89,16 @@ export class BoardService {
     };
   }
 
-  async createColumn(columnData: ColumnCreateDTO) {
+  async createColumn(id: string, columnData: CreateColumnDTO) {
     const board = await this.prisma.boards.findUnique({
-      where: { id: columnData.boardId },
+      where: { id: id },
     });
 
     if (!board) throw new NotFoundException('Board not found');
 
     const newColumn = await this.prisma.columns.create({
       data: {
-        boardId: columnData.boardId,
+        boardId: id,
         columnName: columnData.columnName,
         order: columnData.order,
       },
@@ -108,7 +108,7 @@ export class BoardService {
       throw new InternalServerErrorException('Internal server error');
 
     return {
-      message: 'Column created Successfully',
+      message: `Column created Successfully under the ${board.boardName} Board`,
       data: newColumn,
     };
   }
