@@ -52,8 +52,12 @@ export class BoardService {
       include: {
         columns: {
           where: { deletedAt: null },
+          orderBy: { order: 'asc' },
           include: {
-            tasks: { where: { deletedAt: null } },
+            tasks: {
+              where: { deletedAt: null },
+              orderBy: { position: 'asc' },
+            },
           },
         },
       },
@@ -89,7 +93,7 @@ export class BoardService {
     const newColumn = await this.prisma.columns.create({
       data: {
         boardId: id,
-        columnName: columnData.columnName,
+        title: columnData.title,
         order: columnData.order,
       },
     });

@@ -5,12 +5,54 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateTaskDTO } from '../dto/createTask.dto';
+import { UpdateColumnDTO } from '../dto/updateColumn.dts';
 
 @Injectable()
 export class ColumnService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async updateColumn(id: string, title: string, order: number) {}
+  async updateColumn(id: string, value: UpdateColumnDTO) {
+    return this.prisma.$transaction(async (tx) => {
+      const column = await tx.columns.findUnique({ where: { id } });
+
+      if (!column) throw new NotFoundException('Column not found');
+
+      const oldOrder = column.order;
+
+      if (oldOrder === value.order)
+        return {
+          message: 'Column order remained same',
+          data: column,
+        };
+
+      if (value.order < oldOrder) {
+        await tx.columns.updateMany({
+          where: {
+            boardId: column.boardId,
+            order: { gte: value.order, lt: oldOrder },
+          },
+          data: {
+            order: { increment: 1 },
+          },
+        });
+      } else {
+        await tx.columns.updateMany({
+          where: {
+            boardId: column.boardId,
+            order: { gt: oldOrder, lte: value.order },
+          },
+          data: {
+            order: { decrement: 1 },
+          },
+        });
+      }
+
+      return await tx.columns.update({
+        where: { id },
+        data: { title: value.title, order: value.order },
+      });
+    });
+  }
 
   async createTask(id: string, value: CreateTaskDTO) {
     const column = await this.prisma.columns.findUnique({ where: { id } });
@@ -33,7 +75,7 @@ export class ColumnService {
     if (!task) throw new InternalServerErrorException('Inerneal server error');
 
     return {
-      message: `Task created under the ${column.columnName} column`,
+      message: `Task created under the ${column.title} column`,
       data: task,
     };
   }
@@ -51,7 +93,7 @@ export class ColumnService {
     });
 
     return {
-      message: `${column.columnName} Column deleted`,
+      message: `${column.title} Column deleted`,
       data: '',
     };
   }

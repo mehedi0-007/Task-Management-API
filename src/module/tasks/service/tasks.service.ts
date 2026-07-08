@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UpdateTaskDTO } from '../dto/updateTask.dto';
+import { MoveTaskDTO } from '../dto/moveTask.dto';
 
 @Injectable()
 export class TaskService {
@@ -30,9 +31,43 @@ export class TaskService {
     });
   }
 
-  async updateTaskposition(id: string, position: number) {
-    const task = await this.prisma.tasks.findUnique({ where: { id } });
+  async updateTaskposition(id: string, value: MoveTaskDTO) {
+    return await this.prisma.$transaction(async (tx) => {
+      const task = await tx.tasks.findUnique({ where: { id } });
 
-    if (!task) throw new NotFoundException('Task not found');
+      if (!task) throw new NotFoundException('Task not found');
+
+      const oldPosition = task.position;
+
+      const newPosition = value.destPosition;
+
+      await tx.tasks.updateMany({
+        where: {
+          columnId: task.columnId,
+          position: { gt: oldPosition },
+        },
+        data: {
+          position: { decrement: 1 },
+        },
+      });
+
+      await tx.tasks.updateMany({
+        where: {
+          columnId: task.columnId,
+          position: { gt: newPosition },
+        },
+        data: {
+          position: { increment: 1 },
+        },
+      });
+
+      await tx.tasks.update({
+        where: { id },
+        data: {
+          columnId: value.destColumnId,
+          position: value.destPosition,
+        },
+      });
+    });
   }
 }

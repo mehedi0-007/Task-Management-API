@@ -7,7 +7,7 @@ datasource db {
   provider = "postgresql"
 }
 
-enum ColumnName {
+enum ColumnTitle {
   BACKLOG
   TODO
   IN_PROGRESS
@@ -51,14 +51,14 @@ model Boards {
   createdBy User      @relation(fields: [userId], references: [id])
   columns   Columns[]
 
-  @@index([userId])
+  @@index([userId, deletedAt])
 }
 
 model Columns {
-  id         String     @id @default(uuid())
-  columnName ColumnName
-  boardId    String
-  order      Int
+  id      String      @id @default(uuid())
+  title   ColumnTitle
+  boardId String
+  order   Int
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt()
@@ -67,8 +67,8 @@ model Columns {
   board Boards  @relation(fields: [boardId], references: [id])
   tasks Tasks[]
 
-  @@unique([columnName, boardId, order])
-  @@index([boardId])
+  @@unique([title, boardId, order])
+  @@index([boardId, deletedAt, order])
 }
 
 model Tasks {
@@ -93,7 +93,7 @@ model Tasks {
   taskLabels TaskLabel[]
 
   @@index([assigneeId])
-  @@index([columnId])
+  @@index([columnId, deletedAt, position])
 }
 
 model TaskLabel {

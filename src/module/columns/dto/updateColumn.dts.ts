@@ -1,10 +1,10 @@
 import { ColumnTitle } from '@prisma/client';
-import { IsEnum, IsInt } from 'class-validator';
+import { IsEnum, IsNumber } from 'class-validator';
 
-export class CreateColumnDTO {
+export class UpdateColumnDTO {
   @IsEnum(ColumnTitle)
   title!: ColumnTitle;
 
-  @IsInt()
+  @IsNumber()
   order!: number;
 }

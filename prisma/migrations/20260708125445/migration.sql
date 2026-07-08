@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "ColumnName" AS ENUM ('BACKLOG', 'TODO', 'IN_PROGRESS', 'REVIEW', 'DONE');
+CREATE TYPE "ColumnTitle" AS ENUM ('BACKLOG', 'TODO', 'IN_PROGRESS', 'REVIEW', 'DONE');
 
 -- CreateEnum
 CREATE TYPE "Prioriy" AS ENUM ('LOW', 'MEDIUM', 'HIGH', 'EMERGENCY');
@@ -35,7 +35,7 @@ CREATE TABLE "Boards" (
 -- CreateTable
 CREATE TABLE "Columns" (
     "id" TEXT NOT NULL,
-    "columnName" "ColumnName" NOT NULL,
+    "title" "ColumnTitle" NOT NULL,
     "boardId" TEXT NOT NULL,
     "order" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -86,19 +86,19 @@ CREATE TABLE "Task_Act" (
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
-CREATE INDEX "Boards_userId_idx" ON "Boards"("userId");
+CREATE INDEX "Boards_userId_deletedAt_idx" ON "Boards"("userId", "deletedAt");
 
 -- CreateIndex
-CREATE INDEX "Columns_boardId_idx" ON "Columns"("boardId");
+CREATE INDEX "Columns_boardId_deletedAt_order_idx" ON "Columns"("boardId", "deletedAt", "order");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Columns_columnName_boardId_order_key" ON "Columns"("columnName", "boardId", "order");
+CREATE UNIQUE INDEX "Columns_title_boardId_order_key" ON "Columns"("title", "boardId", "order");
 
 -- CreateIndex
 CREATE INDEX "Tasks_assigneeId_idx" ON "Tasks"("assigneeId");
 
 -- CreateIndex
-CREATE INDEX "Tasks_columnId_idx" ON "Tasks"("columnId");
+CREATE INDEX "Tasks_columnId_deletedAt_position_idx" ON "Tasks"("columnId", "deletedAt", "position");
 
 -- CreateIndex
 CREATE INDEX "TaskLabel_taskId_idx" ON "TaskLabel"("taskId");
