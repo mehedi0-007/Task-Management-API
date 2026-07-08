@@ -31,7 +31,16 @@ async function bootstrap() {
   );
   app.useGlobalFilters(new GlobalExeptionFilter());
 
-  const config = new DocumentBuilder().setTitle('Task Management API').build();
+  const config = new DocumentBuilder()
+    .setTitle('Task Management API')
+    .addBearerAuth({
+      type: 'http',
+      scheme: 'bearer',
+      bearerFormat: 'JWT',
+      description: 'Enter JWT token',
+    })
+    .addSecurityRequirements('bearer')
+    .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, documentFactory);
 

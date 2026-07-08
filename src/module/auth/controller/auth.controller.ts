@@ -4,12 +4,14 @@ import { RegisterUserDTO } from '../dto/registerUser.dto';
 import { Public } from 'src/common/decorators/public.decorator';
 import { LoginUserDTO } from '../dto/login.dto';
 import { Throttle } from '@nestjs/throttler';
+import { ApiOperation } from '@nestjs/swagger';
 
 @Public()
 @Controller('/auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @ApiOperation({ summary: 'Register a new user' })
   @Throttle({
     default: {
       limit: 5,
