@@ -69,6 +69,14 @@ export class ColumnService {
       },
     });
 
+    await this.prisma.taskLabel.create({
+      data: {
+        taskId: task.id,
+        name: value.labelTitle,
+        color: value.labelColor,
+      },
+    });
+
     return {
       message: `Task created successfully`,
       data: task,

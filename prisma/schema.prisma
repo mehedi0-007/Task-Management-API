@@ -77,7 +77,6 @@ model Tasks {
   title       String
   description String
   assigneeId  String
-  labels      String
   dueDate     DateTime
   priority    Prioriy
   position    Int

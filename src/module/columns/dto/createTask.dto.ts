@@ -49,4 +49,18 @@ export class CreateTaskDTO {
   })
   @IsEnum(Prioriy)
   priority!: Prioriy;
+
+  @ApiProperty({
+    example: 'Backend',
+    description: 'Title of the label',
+  })
+  @IsString()
+  labelTitle!: string;
+
+  @ApiProperty({
+    example: 'rgb(59, 130, 246)',
+    description: 'Color of the label in RGB format',
+  })
+  @IsString()
+  labelColor!: string;
 }

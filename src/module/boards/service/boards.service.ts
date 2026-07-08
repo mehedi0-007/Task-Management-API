@@ -53,6 +53,9 @@ export class BoardService {
             tasks: {
               where: { deletedAt: null },
               orderBy: { position: 'asc' },
+              include: {
+                taskLabels: true,
+              },
             },
           },
         },
