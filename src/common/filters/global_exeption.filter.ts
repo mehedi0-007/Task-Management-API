@@ -5,7 +5,7 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
-import type { Request, Response } from 'express';
+import type { Response } from 'express';
 import { Prisma } from '@prisma/client';
 
 @Catch()
@@ -13,7 +13,6 @@ export class GlobalExeptionFilter implements ExceptionFilter {
   catch(exception: any, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
 
-    const request = ctx.getRequest<Request>();
     const response = ctx.getResponse<Response>();
 
     let status = HttpStatus.INTERNAL_SERVER_ERROR;
@@ -51,9 +50,8 @@ export class GlobalExeptionFilter implements ExceptionFilter {
 
     response.status(status).json({
       success: false,
-      message,
-      path: request.url,
-      timeStamp: new Date().toISOString(),
+      message: message,
+      data: null,
     });
   }
 }

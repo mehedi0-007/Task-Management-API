@@ -1,10 +1,12 @@
 import { ColumnTitle } from '@prisma/client';
-import { IsEnum, IsNumber } from 'class-validator';
+import { IsEnum, IsNumber, IsOptional } from 'class-validator';
 
 export class UpdateColumnDTO {
+  @IsOptional()
   @IsEnum(ColumnTitle)
-  title!: ColumnTitle;
+  title?: ColumnTitle;
 
+  @IsOptional()
   @IsNumber()
-  order!: number;
+  order?: number;
 }

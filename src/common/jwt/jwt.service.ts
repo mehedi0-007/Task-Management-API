@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { configDotenv } from 'dotenv';
 import type { StringValue } from 'ms';
@@ -23,9 +19,6 @@ export class AppJwtService {
     const accessExpire = (process.env.JWT_ACCESS_EXPIRE ??
       '15m') as StringValue;
 
-    if (!accessExpire || !accessSecret)
-      throw new NotFoundException('Secret not found');
-
     return await this.jwt.signAsync(payload, {
       secret: accessSecret,
       expiresIn: accessExpire,
@@ -36,9 +29,6 @@ export class AppJwtService {
     const refreshExpire = (process.env.JWT_REFRESH_EXPIRE ??
       '7d') as StringValue;
     const refreshSecret = process.env.JWT_REFRESH_SECRET;
-
-    if (!refreshExpire || !refreshSecret)
-      throw new NotFoundException('Secret not found');
 
     return await this.jwt.signAsync(payload, {
       secret: refreshSecret,

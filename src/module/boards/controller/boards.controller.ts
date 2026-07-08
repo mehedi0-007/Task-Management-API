@@ -3,11 +3,6 @@ import { BoardService } from '../service/boards.service';
 import { CurrentUser } from 'src/common/decorators/currentUser.decorator';
 import { CreateColumnDTO } from '../dto/column.dto';
 
-interface jwtPayload {
-  sub: string;
-  email: string;
-}
-
 @Controller('/boards')
 export class BoardController {
   constructor(private readonly boardService: BoardService) {}
@@ -15,9 +10,9 @@ export class BoardController {
   @Post()
   async createBoard(
     @Body() boardName: string,
-    @CurrentUser() user: jwtPayload,
+    @CurrentUser('sub') userId: string,
   ) {
-    return await this.boardService.createBoard(user.sub, boardName);
+    return await this.boardService.createBoard(userId, boardName);
   }
 
   @Get()

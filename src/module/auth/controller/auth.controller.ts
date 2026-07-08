@@ -5,11 +5,11 @@ import { Public } from 'src/common/decorators/public.decorator';
 import { LoginUserDTO } from '../dto/login.dto';
 import { Throttle } from '@nestjs/throttler';
 
+@Public()
 @Controller('/auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Public()
   @Throttle({
     default: {
       limit: 5,
@@ -21,7 +21,6 @@ export class AuthController {
     return await this.authService.registerUser(dto);
   }
 
-  @Public()
   @Throttle({
     default: {
       limit: 5,
@@ -33,7 +32,6 @@ export class AuthController {
     return await this.authService.loginUser(dto);
   }
 
-  @Public()
   @Throttle({
     default: {
       limit: 15,

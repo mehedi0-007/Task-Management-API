@@ -1,7 +1,17 @@
-import { Body, Controller, Delete, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { ColumnService } from '../service/column.service';
 import { CreateTaskDTO } from '../dto/createTask.dto';
 import { UpdateColumnDTO } from '../dto/updateColumn.dts';
+import { GetTaskDTO } from 'src/module/columns/dto/filterTask.dto';
 
 @Controller('/column')
 export class ColumnController {
@@ -15,6 +25,11 @@ export class ColumnController {
   @Post('/:id/tasks')
   async createTasks(@Param('id') id: string, @Body() dto: CreateTaskDTO) {
     return await this.columnService.createTask(id, dto);
+  }
+
+  @Get('/:id/tasks')
+  async getTasks(@Param('id') id: string, @Query() dto: GetTaskDTO) {
+    return await this.columnService.getTasks(id, dto);
   }
 
   @Delete('/:id')

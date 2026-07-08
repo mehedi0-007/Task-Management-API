@@ -1,4 +1,4 @@
-import { Controller, Delete, Param, Patch, Body } from '@nestjs/common';
+import { Delete, Param, Patch, Body, Controller } from '@nestjs/common';
 import { TaskService } from '../service/tasks.service';
 import { UpdateTaskDTO } from '../dto/updateTask.dto';
 import { MoveTaskDTO } from '../dto/moveTask.dto';

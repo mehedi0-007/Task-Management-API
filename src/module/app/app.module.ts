@@ -30,16 +30,17 @@ import { UserModule } from '../users/user.module.js';
     AppService,
     {
       provide: APP_GUARD,
-      useClass: AuthGuard,
-    },
-    {
-      provide: APP_GUARD,
       useClass: ThrottlerGuard,
     },
     {
       provide: APP_INTERCEPTOR,
       useClass: LoggerInterceptor,
     },
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+
     {
       provide: APP_INTERCEPTOR,
       useClass: ResponseInterceptor,

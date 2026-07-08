@@ -1,31 +1,23 @@
-import {
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException,
-} from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { PrismaService } from 'src/prisma/service/prisma.service';
 import { CreateTaskDTO } from '../dto/createTask.dto';
 import { UpdateColumnDTO } from '../dto/updateColumn.dts';
+import { GetTaskDTO } from 'src/module/columns/dto/filterTask.dto';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class ColumnService {
   constructor(private readonly prisma: PrismaService) {}
 
   async updateColumn(id: string, value: UpdateColumnDTO) {
-    return this.prisma.$transaction(async (tx) => {
+    const data = await this.prisma.$transaction(async (tx) => {
       const column = await tx.columns.findUnique({ where: { id } });
 
       if (!column) throw new NotFoundException('Column not found');
 
       const oldOrder = column.order;
 
-      if (oldOrder === value.order)
-        return {
-          message: 'Column order remained same',
-          data: column,
-        };
-
-      if (value.order < oldOrder) {
+      if (value.order && value.order < oldOrder) {
         await tx.columns.updateMany({
           where: {
             boardId: column.boardId,
@@ -52,6 +44,11 @@ export class ColumnService {
         data: { title: value.title, order: value.order },
       });
     });
+
+    return {
+      message: 'Column updated successfully',
+      data,
+    };
   }
 
   async createTask(id: string, value: CreateTaskDTO) {
@@ -72,10 +69,42 @@ export class ColumnService {
       },
     });
 
-    if (!task) throw new InternalServerErrorException('Inerneal server error');
+    return {
+      message: `Task created successfully`,
+      data: task,
+    };
+  }
+
+  async getTasks(columnId: string, query: GetTaskDTO) {
+    const where: Prisma.TasksWhereInput = {
+      columnId,
+      deletedAt: null,
+
+      ...(query.title && {
+        title: {
+          contains: query.title,
+          mode: 'insensitive',
+        },
+      }),
+
+      ...(query.priority && {
+        priority: query.priority,
+      }),
+
+      ...(query.dueDate && {
+        dueDate: {
+          gte: query.dueDate,
+          lt: new Date(query.dueDate.getTime() + 24 * 60 * 60 * 1000),
+        },
+      }),
+    };
+
+    const task = await this.prisma.tasks.findMany({ where });
+
+    if (!task) throw new NotFoundException('No task found');
 
     return {
-      message: `Task created under the ${column.title} column`,
+      message: 'Tasks found successfully',
       data: task,
     };
   }
@@ -93,8 +122,8 @@ export class ColumnService {
     });
 
     return {
-      message: `${column.title} Column deleted`,
-      data: '',
+      message: 'Column deleted successfully',
+      data: null,
     };
   }
 }

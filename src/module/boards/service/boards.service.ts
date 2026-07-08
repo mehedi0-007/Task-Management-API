@@ -1,9 +1,5 @@
-import {
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException,
-} from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { PrismaService } from 'src/prisma/service/prisma.service';
 import { CreateColumnDTO } from '../dto/column.dto';
 
 @Injectable()
@@ -36,12 +32,12 @@ export class BoardService {
     if (!boards) {
       return {
         message: 'No boards found',
-        data: ' ',
+        data: null,
       };
     }
 
     return {
-      message: 'Boards found',
+      message: 'Boards found successfully',
       data: boards,
     };
   }
@@ -66,7 +62,7 @@ export class BoardService {
     if (!boardData) throw new NotFoundException('Board not found');
 
     return {
-      message: 'Board found',
+      message: 'Board found successfully',
       data: boardData,
     };
   }
@@ -78,19 +74,19 @@ export class BoardService {
     });
 
     return {
-      message: 'Board deleted',
-      data: ' ',
+      message: 'Board deleted successfully',
+      data: null,
     };
   }
 
   async createColumn(id: string, columnData: CreateColumnDTO) {
     const board = await this.prisma.boards.findUnique({
-      where: { id: id },
+      where: { id },
     });
 
     if (!board) throw new NotFoundException('Board not found');
 
-    const newColumn = await this.prisma.columns.create({
+    const data = await this.prisma.columns.create({
       data: {
         boardId: id,
         title: columnData.title,
@@ -98,12 +94,9 @@ export class BoardService {
       },
     });
 
-    if (!newColumn)
-      throw new InternalServerErrorException('Internal server error');
-
     return {
-      message: `Column created Successfully under the ${board.boardName} Board`,
-      data: newColumn,
+      message: `Column created Successfully`,
+      data,
     };
   }
 }
