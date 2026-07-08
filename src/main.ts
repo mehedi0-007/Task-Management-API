@@ -3,6 +3,9 @@ import { AppModule } from './module/app/app.module.js';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { GlobalExeptionFilter } from './common/filters/global_exeption.filter.js';
+import { configDotenv } from 'dotenv';
+
+configDotenv();
 
 function checkConfig() {
   const { DATABASE_URL, JWT_ACCESS_SECRET, JWT_REFRESH_SECRET } = process.env;
@@ -43,6 +46,13 @@ async function bootstrap() {
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, documentFactory);
+
+  const origins =
+    process.env.CORS_ORIGINS?.split(',').map((origin) => origin.trim()) ?? true;
+
+  app.enableCors({
+    origin: origins,
+  });
 
   await app.listen(process.env.PORT ?? 3000);
 }
