@@ -22,7 +22,7 @@ export class ColumnService {
         columnId: id,
         title: value.title,
         description: value.description,
-        assignee: value.assignee,
+        assigneeId: value.assigneeId,
         labels: value.labels,
         position: value.position,
         priority: value.priority,
@@ -47,7 +47,7 @@ export class ColumnService {
 
     await this.prisma.columns.update({
       where: { id: columnId },
-      data: { isDeleted: true },
+      data: { deletedAt: new Date() },
     });
 
     return {

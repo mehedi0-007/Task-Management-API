@@ -9,7 +9,7 @@ export class CreateTaskDTO {
   description!: string;
 
   @IsString()
-  assignee!: string;
+  assigneeId!: string;
 
   @IsString()
   labels!: string;

@@ -7,13 +7,12 @@ CREATE TYPE "Prioriy" AS ENUM ('LOW', 'MEDIUM', 'HIGH', 'EMERGENCY');
 -- CreateTable
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
-    "username" TEXT NOT NULL,
     "fullName" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "phoneNo" TEXT NOT NULL,
     "password" TEXT NOT NULL,
     "profilePhoto" TEXT,
-    "isDeleted" BOOLEAN NOT NULL DEFAULT false,
+    "refreshToken" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "deletedAt" TIMESTAMP(3),
@@ -26,7 +25,6 @@ CREATE TABLE "Boards" (
     "id" TEXT NOT NULL,
     "boardName" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
-    "isDeleted" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "deletedAt" TIMESTAMP(3),
@@ -40,7 +38,6 @@ CREATE TABLE "Columns" (
     "columnName" "ColumnName" NOT NULL,
     "boardId" TEXT NOT NULL,
     "order" INTEGER NOT NULL,
-    "isDeleted" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "deletedAt" TIMESTAMP(3),
@@ -53,12 +50,12 @@ CREATE TABLE "Tasks" (
     "id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
     "description" TEXT NOT NULL,
-    "assignee" TEXT NOT NULL,
+    "assigneeId" TEXT NOT NULL,
     "labels" TEXT NOT NULL,
     "dueDate" TIMESTAMP(3) NOT NULL,
     "priority" "Prioriy" NOT NULL,
+    "position" INTEGER NOT NULL,
     "columnId" TEXT NOT NULL,
-    "isDeleted" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "deletedAt" TIMESTAMP(3),
@@ -67,9 +64,20 @@ CREATE TABLE "Tasks" (
 );
 
 -- CreateTable
+CREATE TABLE "TaskLabel" (
+    "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "color" TEXT NOT NULL,
+    "taskId" TEXT NOT NULL,
+
+    CONSTRAINT "TaskLabel_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "Task_Act" (
     "id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
 
     CONSTRAINT "Task_Act_pkey" PRIMARY KEY ("id")
 );
@@ -78,16 +86,25 @@ CREATE TABLE "Task_Act" (
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "User_phoneNo_key" ON "User"("phoneNo");
-
--- CreateIndex
 CREATE INDEX "Boards_userId_idx" ON "Boards"("userId");
 
 -- CreateIndex
 CREATE INDEX "Columns_boardId_idx" ON "Columns"("boardId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Columns_columnName_boardId_key" ON "Columns"("columnName", "boardId");
+CREATE UNIQUE INDEX "Columns_columnName_boardId_order_key" ON "Columns"("columnName", "boardId", "order");
+
+-- CreateIndex
+CREATE INDEX "Tasks_assigneeId_idx" ON "Tasks"("assigneeId");
+
+-- CreateIndex
+CREATE INDEX "Tasks_columnId_idx" ON "Tasks"("columnId");
+
+-- CreateIndex
+CREATE INDEX "TaskLabel_taskId_idx" ON "TaskLabel"("taskId");
+
+-- CreateIndex
+CREATE INDEX "Task_Act_userId_idx" ON "Task_Act"("userId");
 
 -- AddForeignKey
 ALTER TABLE "Boards" ADD CONSTRAINT "Boards_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -99,4 +116,10 @@ ALTER TABLE "Columns" ADD CONSTRAINT "Columns_boardId_fkey" FOREIGN KEY ("boardI
 ALTER TABLE "Tasks" ADD CONSTRAINT "Tasks_columnId_fkey" FOREIGN KEY ("columnId") REFERENCES "Columns"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Tasks" ADD CONSTRAINT "Tasks_assignee_fkey" FOREIGN KEY ("assignee") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Tasks" ADD CONSTRAINT "Tasks_assigneeId_fkey" FOREIGN KEY ("assigneeId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "TaskLabel" ADD CONSTRAINT "TaskLabel_taskId_fkey" FOREIGN KEY ("taskId") REFERENCES "Tasks"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Task_Act" ADD CONSTRAINT "Task_Act_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

@@ -26,7 +26,7 @@ export class TaskService {
 
     await this.prisma.tasks.update({
       where: { id },
-      data: { isDeleted: true },
+      data: { deletedAt: new Date() },
     });
   }
 

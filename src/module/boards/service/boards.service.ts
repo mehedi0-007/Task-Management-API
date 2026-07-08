@@ -30,17 +30,7 @@ export class BoardService {
 
   async getAllBoards() {
     const boards = await this.prisma.boards.findMany({
-      where: { isDeleted: false },
-      include: {
-        columns: {
-          where: { isDeleted: false },
-          include: {
-            tasks: {
-              where: { isDeleted: false },
-            },
-          },
-        },
-      },
+      where: { deletedAt: null },
     });
 
     if (!boards) {
@@ -56,14 +46,14 @@ export class BoardService {
     };
   }
 
-  async getBoardInfo(boardid: string) {
+  async getBoardInfo(boardId: string) {
     const boardData = await this.prisma.boards.findUnique({
-      where: { id: boardid, isDeleted: false },
+      where: { id: boardId, deletedAt: null },
       include: {
         columns: {
-          where: { isDeleted: false },
+          where: { deletedAt: null },
           include: {
-            tasks: { where: { isDeleted: false } },
+            tasks: { where: { deletedAt: null } },
           },
         },
       },
@@ -80,7 +70,7 @@ export class BoardService {
   async deleteBoard(boardId: string) {
     await this.prisma.boards.update({
       where: { id: boardId },
-      data: { isDeleted: true },
+      data: { deletedAt: new Date() },
     });
 
     return {
