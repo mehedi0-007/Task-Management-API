@@ -23,12 +23,6 @@ export class CreateTaskDTO {
   assigneeId!: string;
 
   @ApiProperty({
-    example: 'backend,docs,swagger',
-  })
-  @IsString()
-  labels!: string;
-
-  @ApiProperty({
     type: String,
     format: 'date-time',
     example: '2026-07-08T12:00:00.000Z',
