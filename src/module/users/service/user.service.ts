@@ -44,4 +44,20 @@ export class UserService {
       data: null,
     };
   }
+
+  async getTaskLog() {
+    const taskLog = await this.prisma.task_Act.findMany();
+
+    if (!taskLog) {
+      return {
+        message: 'No task log found ',
+        data: null,
+      };
+    }
+
+    return {
+      message: 'Task log found successfully',
+      data: taskLog,
+    };
+  }
 }

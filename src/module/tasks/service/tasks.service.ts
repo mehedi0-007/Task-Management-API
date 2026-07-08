@@ -34,7 +34,7 @@ export class TaskService {
     };
   }
 
-  async updateTaskposition(id: string, value: MoveTaskDTO) {
+  async updateTaskposition(id: string, userId: string, value: MoveTaskDTO) {
     const data = await this.prisma.$transaction(async (tx) => {
       const task = await tx.tasks.findUnique({ where: { id } });
 
@@ -71,7 +71,16 @@ export class TaskService {
           position: value.destPosition,
         },
       });
+
+      await this.prisma.task_Act.create({
+        data: {
+          userId: userId,
+          title: `Moved the ${task.title} from one column to another one.`,
+          createdAt: new Date(),
+        },
+      });
     });
+
     return {
       message: 'Task updated successfully',
       data,

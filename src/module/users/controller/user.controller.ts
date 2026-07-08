@@ -25,4 +25,10 @@ export class UserController {
       dto.newPassword,
     );
   }
+
+  @ApiOperation({ summary: 'Get the task activity log' })
+  @Get('/taskLog')
+  async getTaskLogging() {
+    return await this.userService.getTaskLog();
+  }
 }

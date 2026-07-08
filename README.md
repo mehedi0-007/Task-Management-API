@@ -56,14 +56,19 @@ npx prisma generate
 npm run start:dev
 ```
 
+## LIve API Link
+
+```
+https://task-management-api-production-254b.up.railway.app/
+```
+
 ## API Documentation
 
 Swagger UI is available at:
 
 ```text
-http://localhost:3000/docs
+https://task-management-api-production-254b.up.railway.app/docs
 ```
-
 
 ## Project Structure
 
@@ -95,9 +100,8 @@ prisma/
 
 ## Challenges I Faced And My Approach To Solve Them
 
- 
 1. The first challenge I faced was to move the task part between the columns and also reorder them accordingly but after thinking for some time and getting help with some resources I came with a approach. At first I searched the task with taskId, then if it need to move to another column I need two things to get done at first. First I need to make a space into that exact position for the destination column and also need to reorder the tasks in the source column. Then I need to reorder the tasks in the destination column.
-Then update the moving tasks source columnId and positions accroding to the info came from the request. This is how I solved it.
+   Then update the moving tasks source columnId and positions accroding to the info came from the request. This is how I solved it.
 
 2. I also faced challenge when making an central exeption filter so every exeption gets from here. At first I wasn't familiar with the prisma errors handling in here. After following some docs and resources it came in my hand.
 
@@ -109,4 +113,4 @@ Then update the moving tasks source columnId and positions accroding to the info
 
 ## Future Improvements
 
-If I could get some more time I would have implemented some more features though I haven't think of it that much rather than the requirements such as validating eamils and phone numbers by one time codes, keeping a counter of "In progress" tasks, triggering and using events to notify about due dates or emergency tagged tasks etc.
+If I could get some more time I would have implemented some more features though I haven't think of it that much rather than the requirements such as adding an admin pannel for overall report for the whole system, validating eamils and phone numbers by one time codes, keeping a counter of "In progress" tasks, triggering and using events to notify about due dates or emergency tagged tasks etc.

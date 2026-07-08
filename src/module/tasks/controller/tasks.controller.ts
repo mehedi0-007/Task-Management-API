@@ -3,6 +3,7 @@ import { TaskService } from '../service/tasks.service';
 import { UpdateTaskDTO } from '../dto/updateTask.dto';
 import { MoveTaskDTO } from '../dto/moveTask.dto';
 import { ApiBody, ApiOperation } from '@nestjs/swagger';
+import { CurrentUser } from 'src/common/decorators/currentUser.decorator';
 
 @Controller('/tasks')
 export class TaskController {
@@ -23,7 +24,11 @@ export class TaskController {
 
   @ApiOperation({ summary: 'Move a task to a different position' })
   @Patch('/:id/position')
-  async updateTaskPosition(@Param('id') id: string, @Body() dto: MoveTaskDTO) {
-    return await this.taskService.updateTaskposition(id, dto);
+  async updateTaskPosition(
+    @Param('id') id: string,
+    @Body() dto: MoveTaskDTO,
+    @CurrentUser('sub') userId: string,
+  ) {
+    return await this.taskService.updateTaskposition(id, userId, dto);
   }
 }

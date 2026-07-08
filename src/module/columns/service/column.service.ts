@@ -47,7 +47,7 @@ export class ColumnService {
 
     return {
       message: 'Column updated successfully',
-      data,
+      data: data,
     };
   }
 
