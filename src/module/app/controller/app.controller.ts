@@ -17,6 +17,7 @@ export class AppController {
   }
 
   @Get()
+  @Public()
   mainUrl() {
     return this.appService.getUrl();
   }
