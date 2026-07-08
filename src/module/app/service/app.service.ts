@@ -8,4 +8,11 @@ export class AppService {
       data: null,
     };
   }
+
+  getUrl() {
+    return {
+      message: 'Welcome to Task Management API system',
+      data: null,
+    };
+  }
 }
