@@ -33,14 +33,13 @@ import { UserModule } from '../users/user.module.js';
       useClass: ThrottlerGuard,
     },
     {
-      provide: APP_INTERCEPTOR,
-      useClass: LoggerInterceptor,
-    },
-    {
       provide: APP_GUARD,
       useClass: AuthGuard,
     },
-
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: LoggerInterceptor,
+    },
     {
       provide: APP_INTERCEPTOR,
       useClass: ResponseInterceptor,

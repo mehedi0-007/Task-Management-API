@@ -1,16 +1,19 @@
 import { Body, Controller, Get, Param, Patch } from '@nestjs/common';
 import { UserService } from '../service/user.service';
 import { UpdatePasswordDTO } from '../dto/updatePassword.dto';
+import { ApiOperation } from '@nestjs/swagger';
 
 @Controller('/user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @ApiOperation({ summary: 'Get user information' })
   @Get('/:id')
   async getUserInfo(@Param('id') id: string) {
     return await this.userService.getUserInfo(id);
   }
 
+  @ApiOperation({ summary: 'Update user password' })
   @Patch('/:id')
   async updatePassword(
     @Param('id') id: string,

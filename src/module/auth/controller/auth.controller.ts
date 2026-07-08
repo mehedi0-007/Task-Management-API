@@ -5,6 +5,7 @@ import { Public } from 'src/common/decorators/public.decorator';
 import { LoginUserDTO } from '../dto/login.dto';
 import { Throttle } from '@nestjs/throttler';
 import { ApiOperation } from '@nestjs/swagger';
+import { RefreshTokenDTO } from '../dto/refreshToken.dto';
 
 @Public()
 @Controller('/auth')
@@ -23,6 +24,7 @@ export class AuthController {
     return await this.authService.registerUser(dto);
   }
 
+  @ApiOperation({ summary: 'Log in a user' })
   @Throttle({
     default: {
       limit: 5,
@@ -34,6 +36,7 @@ export class AuthController {
     return await this.authService.loginUser(dto);
   }
 
+  @ApiOperation({ summary: 'Refresh the access token' })
   @Throttle({
     default: {
       limit: 15,
@@ -41,7 +44,10 @@ export class AuthController {
     },
   })
   @Post('/refresh')
-  async refreshAccessToken(@Body() userId: string, refreshToken: string) {
-    return await this.authService.refreshAccessToken(userId, refreshToken);
+  async refreshAccessToken(@Body() dto: RefreshTokenDTO) {
+    return await this.authService.refreshAccessToken(
+      dto.userId,
+      dto.refreshToken,
+    );
   }
 }

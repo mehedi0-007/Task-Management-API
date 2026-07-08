@@ -17,6 +17,7 @@ export class GlobalExeptionFilter implements ExceptionFilter {
 
     let status = HttpStatus.INTERNAL_SERVER_ERROR;
     let message = 'Internal Server Error';
+    console.error(exception);
 
     if (exception instanceof Prisma.PrismaClientKnownRequestError) {
       switch (exception.code) {
@@ -47,6 +48,8 @@ export class GlobalExeptionFilter implements ExceptionFilter {
         message = Array.isArray(msg) ? msg.join(', ') : (msg as string);
       }
     }
+
+    console.log(message);
 
     response.status(status).json({
       success: false,
