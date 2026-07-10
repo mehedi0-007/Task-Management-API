@@ -13,6 +13,9 @@ A NestJS-based task management API built with PostgreSQL and Prisma. The project
 - Global response handling and exception filtering
 - Console logging information system
 - Used CORS to prevent request from unauthorized urls
+- Used Rate Limiting for all routes and custom rate limiting for auth routes
+- Used track activity log under the user routes
+- All the coding sections are hand written exept the project and prisma initialization
 
 ## Setup
 
@@ -59,7 +62,7 @@ npm run start:dev
 ## LIve API Link
 
 ```
-https://task-management-api-production-254b.up.railway.app/
+https://task-management-api-bct4.onrender.com/
 ```
 
 ## API Documentation
@@ -67,7 +70,7 @@ https://task-management-api-production-254b.up.railway.app/
 Swagger UI is available at:
 
 ```text
-https://task-management-api-production-254b.up.railway.app/docs
+https://task-management-api-bct4.onrender.com/docs
 ```
 
 ## Project Structure
