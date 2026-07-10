@@ -30,7 +30,7 @@ npm install
 Create a `.env` file in the project root and add the required variables:
 
 ```env
-DATABASE_URL="PostgreSQL Database URL you want to use in this project since it built using Prisma for the PostgreSQL"
+DATABASE_URL="PostgreSQL Database URL you want to use in this project"
 JWT_ACCESS_SECRET="your-access-secret"
 JWT_REFRESH_SECRET="your-refresh-secret"
 JWT_ACCESS_EXPIRE= "Expiry time you prefer"
